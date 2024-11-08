@@ -9,7 +9,7 @@ from typing import List
 
 
 def filter_datum(
-        fields: List[str], redaction: str, message: str, separator: str
+    fields: List[str], redaction: str, message: str, separator: str
 ) -> str:
     """
     Obfuscates log messages by replacing values of specified fields with
@@ -36,6 +36,9 @@ def filter_datum(
     return message
 
 
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
     """
@@ -59,3 +62,24 @@ class RedactingFormatter(logging.Formatter):
             original_message,
             self.SEPARATOR
         )
+
+
+def get_logger() -> logging.Logger:
+    """
+    Creates a logger named "user_data" to log messages with sensitive
+    information filtered out.
+
+    Returns:
+        logging.Logger: Configured logger object.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    return logger
