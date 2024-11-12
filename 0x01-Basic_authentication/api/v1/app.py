@@ -21,10 +21,11 @@ def unauthorized(error) -> str:
     """ Unauthorized handler """
     response = jsonify({"error": "Unauthorized"})
     response.status_code = 401
-    response.headers["Content-Length"] = len(response.data)
+    response.headers["Content-Length"] = str(len(response.data))
+    response.headers["Connection"] = "close"
     return response
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port)
+    app.run(host=host, port=port, threaded=False)
