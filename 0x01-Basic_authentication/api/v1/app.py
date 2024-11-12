@@ -19,9 +19,15 @@ def not_found(error) -> str:
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """ Unauthorized handler """
-    response = jsonify({"error": "Unauthorized"})
-    response.status_code = 401
-    response.direct_passthrough = False  # Ensure data calculation
+    return jsonify({"error": "Unauthorized"}), 401
+
+@app.errorhandler(403)
+def forbidden(error) -> str:
+    """ Forbidden handler """
+    response = jsonify({"error": "Forbidden"})
+    response.status_code = 403
+    response.headers["Content-Length"] = str(len(response.data))
+    response.headers["Connection"] = "close"
     return response
 
 if __name__ == "__main__":
