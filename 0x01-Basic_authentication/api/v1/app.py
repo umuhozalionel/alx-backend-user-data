@@ -24,7 +24,7 @@ def unauthorized(error) -> str:
     """ Unauthorized handler """
     response = jsonify({"error": "Unauthorized"})
     response.status_code = 401
-    response.headers["Content-Length"] = str(len(response.get_data(as_text=True)))
+    response.headers["Content-Length"] = str(len(response.get_data(as_text=True).encode('utf-8')))
     response.headers["Connection"] = "close"
     return response
 
@@ -33,11 +33,11 @@ def forbidden(error) -> str:
     """ Forbidden handler """
     response = jsonify({"error": "Forbidden"})
     response.status_code = 403
-    response.headers["Content-Length"] = str(len(response.get_data(as_text=True)))
+    response.headers["Content-Length"] = str(len(response.get_data(as_text=True).encode('utf-8')))
     response.headers["Connection"] = "close"
     return response
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port, threaded=False, use_reloader=False)  # This forces HTTP/1.0 behavior
+    app.run(host=host, port=port, threaded=False, use_reloader=False)  # Force HTTP/1.0 behavior
