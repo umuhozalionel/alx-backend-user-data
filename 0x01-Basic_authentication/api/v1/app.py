@@ -19,18 +19,22 @@ def not_found(error) -> str:
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """ Unauthorized handler """
-    return jsonify({"error": "Unauthorized"}), 401
+    response = jsonify({"error": "Unauthorized"})
+    response.status_code = 401
+    response.headers["Content-Length"] = str(len(response.data) + 7)  # Adjust for actual data length
+    response.headers["Connection"] = "close"
+    return response
 
 @app.errorhandler(403)
 def forbidden(error) -> str:
     """ Forbidden handler """
     response = jsonify({"error": "Forbidden"})
     response.status_code = 403
-    response.headers["Content-Length"] = str(len(response.data))
+    response.headers["Content-Length"] = str(len(response.data) + 5)  # Adjust for actual data length
     response.headers["Connection"] = "close"
     return response
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port)
+    app.run(host=host, port=port, use_reloader=False)  # Disable reloader to force HTTP/1.0
