@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-""" DocDocDocDocDocDoc
-"""
-from flask import Blueprint
+from models.user import User
+from api.v1.views.blueprint import app_views
 
-app_views = Blueprint("app_views", __name__, url_prefix="/api/v1")
-
-from api.v1.views.index import *
-from api.v1.views.users import *
+import api.v1.views.index
+import api.v1.views.users  # If this file exists
 
 User.load_from_file()
