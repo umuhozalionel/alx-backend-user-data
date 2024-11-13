@@ -1,6 +1,6 @@
 # api/v1/app.py
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 from os import getenv
 
@@ -28,6 +28,7 @@ def before_request():
         if auth.current_user(request) is None:
             abort(403, description="Forbidden")
 
+@app.route('/api/v1/status', methods=['GET'])
 @app.route('/api/v1/status/', methods=['GET'])
 def status():
     return {"status": "OK"}
@@ -39,6 +40,18 @@ def unauthorized():
 @app.route('/api/v1/forbidden/', methods=['GET'])
 def forbidden():
     abort(403, description="Forbidden")
+
+@app.errorhandler(401)
+def unauthorized_error(error):
+    response = jsonify({"error": "Unauthorized"})
+    response.status_code = 401
+    return response
+
+@app.errorhandler(403)
+def forbidden_error(error):
+    response = jsonify({"error": "Forbidden"})
+    response.status_code = 403
+    return response
 
 if __name__ == "__main__":
     app.run(host=getenv('API_HOST', '0.0.0.0'), port=int(getenv('API_PORT', 5000)))
