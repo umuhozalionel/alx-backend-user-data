@@ -10,11 +10,9 @@ class Auth:
         if excluded_paths is None or not excluded_paths:
             return True
         
-        # Add trailing slash to path if not present
         if not path.endswith('/'):
             path += '/'
-        
-        # Normalize excluded_paths
+
         excluded_paths = [p if p.endswith('/') else p + '/' for p in excluded_paths]
 
         if path in excluded_paths:
@@ -23,7 +21,11 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        return None
+        if request is None:
+            return None
+        if 'Authorization' not in request.headers:
+            return None
+        return request.headers['Authorization']
 
     def current_user(self, request=None) -> TypeVar('User'):
         return None
