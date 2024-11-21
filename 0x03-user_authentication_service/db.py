@@ -48,7 +48,10 @@ class DB:
         try:
             return self._session.query(User).filter_by(**kwargs).one()
         except NoResultFound:
-            raise NoResultFound("No user found with the specified attributes")
+            raise NoResultFound(
+                "No user found with the specified attributes"
+            )
         except InvalidRequestError:
-            raise InvalidRequestError("Invalid request with the specified attributes")
-
+            raise InvalidRequestError(
+                "Invalid request with the specified attributes"
+            )
